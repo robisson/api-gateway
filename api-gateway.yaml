@@ -1,0 +1,53 @@
+name: "api-gateway-configuration"
+
+variables:
+  users_target: https://apimock.com
+
+policies:
+  - name: rewritePolicy
+    type: rewrite
+    rewrite:
+      match: /users
+      destination: /users
+
+integrations:
+  - name: apimock
+    type: http
+    serviceEndpoint: "{{users_target}}"
+
+products:
+  - name: recurring-payment
+    flow:
+      request:
+        policies:
+          - rewritePolicy
+      response:
+        policies: []
+
+apps:
+  - name: sensedia-academy
+    product: recurring-payment
+
+enviroments:
+  - development
+  - stagging
+  - production
+
+apis:
+  - name: users
+    products:
+      - recurring-payment
+    enviroments:
+      - development
+      - stagging
+    resources:
+      - path: /users
+        methods:
+          - GET:
+              flow:
+                request:
+                  policies:
+                    - rewritePolicy
+                integration:
+                  - apimock
+                response: []
