@@ -18,12 +18,16 @@ const router = (app: Application, ROUTES: any) => {
         .json({ message: "Not Found" })
     } else {
       //get all pocicies, products, apis and resources
-      require("../policies/mediation/ratelimit")(app, ROUTES);
-      require("../policies/integration/proxy")(app, ROUTES);
+      const ratelimit = require("../policies/mediation/ratelimit").default;
+      ratelimit(app, ROUTES);
+
+      const proxy = require("../policies/integration/proxy").default;
+      console.log(proxy);
+      proxy(app, ROUTES);
 
       next();
     }
   })
 }
 
-module.exports = router
+export default router;

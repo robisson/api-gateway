@@ -17,4 +17,4 @@ const setupProxies = (app: Application, routes: any) => {
     })
 }
 
-module.exports = setupProxies
+export default setupProxies;

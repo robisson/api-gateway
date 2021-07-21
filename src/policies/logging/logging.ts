@@ -5,4 +5,4 @@ const setupLogging = (app: Application) => {
     app.use(morgan('combined'));
 }
 
-module.exports = setupLogging
+export default setupLogging;
