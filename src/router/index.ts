@@ -2,7 +2,7 @@ import { Application, Request, Response, NextFunction } from "express"
 
 const database = require('../../database');
 
-const router = (app: Application, ROUTES: any) => {
+const router = (app: Application) => {
   app.use((req: Request, res: Response, next: NextFunction) => {
     //verify if route exists
     const apiRoute = database.apis.find((api: any) => {
@@ -19,11 +19,12 @@ const router = (app: Application, ROUTES: any) => {
     } else {
       //get all pocicies, products, apis and resources
       const ratelimit = require("../policies/mediation/ratelimit").default;
-      ratelimit(app, ROUTES);
+      ratelimit(app, apiRoute);
 
-      const proxy = require("../policies/integration/proxy").default;
-      console.log(proxy);
-      proxy(app, ROUTES);
+      if (apiRoute.integrations.type === "http") {
+        const proxy = require("../policies/integration/proxy").default;
+        proxy(app, apiRoute);
+      }
 
       next();
     }

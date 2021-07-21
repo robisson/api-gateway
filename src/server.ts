@@ -7,12 +7,11 @@ import * as cookieParser from'cookie-parser';
 dotenv.config({ path: __dirname + '/../.env' });
 
 const app = express();
+const port = process.env.PORT || 3000;
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-const port = process.env.PORT || 3000;
-const { ROUTES } = require("./routes");
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   const logging = require("./policies/logging/logging").default;
@@ -23,7 +22,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   apiKeyValidation(app);
 
   // flow
-  router(app, ROUTES);
+  router(app);
 
   next();
 })

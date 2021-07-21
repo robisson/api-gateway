@@ -2,9 +2,26 @@ const database = {
   apis: [
     {
       api_id: '',
-      product_request_policices: [],
+      product_request_policices: [{
+        name: "seller_rate_limit",
+        type: "rate_limit",
+        properties: {
+          windowMs: 15 * 60 * 1000,
+          max: 5
+        }
+      }],
       api_request_policices: [],
       resource_request_policices: [],
+      integrations: {
+        type: "http",
+        properties: {
+          target: "http://localhost:3001/sellers",
+          changeOrigin: true,
+          pathRewrite: {
+            [`^/recurryng-payments/v1/sellers`]: '',
+          },
+        }
+      },
       product_response_policices: [],
       api_response_policices: [],
       resource_response_policices: [],
@@ -15,9 +32,26 @@ const database = {
     },
     {
       api_id: '',
-      product_request_policices: [],
+      product_request_policices: [{
+        name: "seller_rate_limit",
+        type: "rate_limit",
+        properties: {
+          windowMs: 15 * 60 * 1000,
+          max: 5
+        }
+      }],
       api_request_policices: [],
       resource_request_policices: [],
+      integrations: {
+        type: "http",
+        properties: {
+          target: "http://localhost:3001/sellers",
+          changeOrigin: true,
+          pathRewrite: {
+            [`^/recurryng-payments/v1/sellers`]: '',
+          },
+        }
+      },
       product_response_policices: [],
       api_response_policices: [],
       resource_response_policices: [],
@@ -31,6 +65,16 @@ const database = {
       product_request_policices: [],
       api_request_policices: [],
       resource_request_policices: [],
+      integrations: {
+        type: "http",
+        properties: {
+          target: "http://localhost:3001/sellers",
+          changeOrigin: true,
+          pathRewrite: {
+            [`^/recurryng-payments/v1/sellers`]: '',
+          },
+        }
+      },
       product_response_policices: [],
       api_response_policices: [],
       resource_response_policices: [],
