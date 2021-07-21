@@ -1,6 +1,9 @@
-require('dotenv').config({ path: __dirname + '/../.env' });
+import * as dotenv from 'dotenv'
+import { Request, Response, NextFunction } from 'express'
+import * as express from "express";
 
-const express = require('express')
+dotenv.config({ path: __dirname + '/../.env' });
+
 const cookieParser = require('cookie-parser')
 
 const app = express();
@@ -12,11 +15,12 @@ const port = process.env.PORT || 3000;
 
 const { ROUTES } = require("./routes");
 
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   require("./policies/logging/logging")(app);
 
   // query by access_token
-  require("./policies/security/key-validation")(app);
+  const {apiKeyValidation} = require("./policies/security/key-validation");
+  apiKeyValidation(app);
 
   // flow
   require('./router')(app, ROUTES);

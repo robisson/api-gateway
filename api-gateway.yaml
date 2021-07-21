@@ -1,32 +1,45 @@
 name: "api-gateway-configuration"
-
+tenant: "Sensedia Academy"
 variables:
-  users_target: https://apimock.com
-
+  sellers_target: http://localhost:3001
+  token_validation_endpoint: http://localhost:8080/auth/realms/wipkanban/protocol/openid-connect/userinfo
 policies:
-  - name: rewritePolicy
-    type: rewrite
-    rewrite:
-      match: /users
-      destination: /users
+  - name: ratelimmitPolicie
+    type: ratelimmit
+    properties:
+      windowMs: 15 * 60 * 1000,
+      max: 5
+  - name: validateClientSecrete
+    type: oauth2
+    properties:
+      grant_type: client_credentials
+      token_validation_endpoint: "{{token_validation_endpoint}}"
 
 integrations:
-  - name: apimock
+  - name: localhost-sellers
     type: http
-    serviceEndpoint: "{{users_target}}"
+    serviceEndpoint: "{{sellers_target}}"
 
 products:
   - name: recurring-payment
+    path: /recurryng-payments
+    version: v1
     flow:
       request:
         policies:
-          - rewritePolicy
+          - validateClientSecrete
+          - ratelimmit
       response:
         policies: []
 
 apps:
   - name: sensedia-academy
     product: recurring-payment
+
+developers:
+  - name: Robisson Oliveira
+    email: "robisson@robissonoliveira.com.br"
+    roles: ["developer", "admin"]
 
 enviroments:
   - development
@@ -35,19 +48,27 @@ enviroments:
 
 apis:
   - name: users
-    products:
+    products: # many to many relationship
       - recurring-payment
     enviroments:
       - development
-      - stagging
+      - stagging # names of the enviroments published
     resources:
-      - path: /users
+      - path: /sellers
         methods:
           - GET:
               flow:
                 request:
-                  policies:
-                    - rewritePolicy
+                  policies: [] # names of the policices if the system
                 integration:
-                  - apimock
-                response: []
+                  - localhost-sellers # names of the integration if the system
+                response: [] # names of the policices if the system
+      - path: /sellers/{seller_id}
+        methods:
+          - GET:
+              flow:
+                request:
+                  policies: [] # names of the policices if the system
+                integration:
+                  - localhost-sellers # names of the integration if the system
+                response: [] # names of the policices if the system

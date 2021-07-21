@@ -1,7 +1,7 @@
-const yaml = require('js-yaml');
-const fs = require('fs');
+import * as yaml from 'js-yaml'
+import * as fs from 'fs';
 
-const loadConfig = (configFile, encode = 'utf8') => {
+const loadConfig = (configFile: string, encode: BufferEncoding = 'utf8') => {
     try {
         return yaml.load(fs.readFileSync(configFile, encode));
     } catch (e) {
@@ -11,7 +11,7 @@ const loadConfig = (configFile, encode = 'utf8') => {
 
 const configApi = loadConfig(__dirname + "/../api-gateway.yaml");
 
-const ROUTES = [
+const routes = [
     {
         url: '/recurryng-payments/v1/sellers',
         rateLimit: {
@@ -42,4 +42,4 @@ const ROUTES = [
     }
 ]
 
-exports.ROUTES = ROUTES;
+exports.ROUTES = routes;

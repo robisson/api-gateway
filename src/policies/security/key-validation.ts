@@ -1,7 +1,9 @@
-const axios = require('axios');
-const { unauthenticatedResponse } = require('../../utils/response-functions');
+import { Application, Request, Response, NextFunction } from "express"
+import axios from 'axios';
 
-const validateToken = async (access_token, res) => {
+import unauthenticatedResponse from '../../utils/response-functions';
+
+const validateToken = async (access_token: string, res: Response) => {
   const tokenValidationendpoint = process.env.TOKEN_VALIDATION_ENDPOINT;
 
   try {
@@ -21,8 +23,12 @@ const validateToken = async (access_token, res) => {
   }
 }
 
-const apiKeyValidation = async (app) => {
-  app.use(async (req, res, next) => {
+interface RequestApiKeyValidation extends Request {
+  client_id?: string;
+}
+
+export const apiKeyValidation = async (app: Application) => {
+  app.use(async (req: RequestApiKeyValidation, res: Response, next: NextFunction) => {
     const { authorization: access_token } = req.headers;
 
     if (access_token === undefined) {
@@ -39,4 +45,3 @@ const apiKeyValidation = async (app) => {
   })
 }
 
-module.exports = apiKeyValidation

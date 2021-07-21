@@ -1,9 +1,11 @@
+import { Application, Request, Response, NextFunction } from "express"
+
 const database = require('../../database');
 
-const router = (app, ROUTES) => {
-  app.use((req, res, next) => {
+const router = (app: Application, ROUTES: any) => {
+  app.use((req: Request, res: Response, next: NextFunction) => {
     //verify if route exists
-    const apiRoute = database.apis.find(api => {
+    const apiRoute = database.apis.find((api: any) => {
       if (req.url.match(api.api_regex_pattern) !== null && api.method == req.method) {
         return true;
       }
