@@ -9,18 +9,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Call API for Cide Evaluation
+    - name: Call API for Code Reviewer to Code Evaluation
       run: |
         curl -X GET "http://code-reviewer-genai-alb-62547224.us-east-1.elb.amazonaws.com/review?action=evaluate_code&pr_number=${{ github.event.pull_request.number }}"
 
-    - name: Call API for Business rule Evaluation
+    - name: Call API for Code Reviewer to Business rule Evaluation
       run: |
         curl -X GET "http://code-reviewer-genai-alb-62547224.us-east-1.elb.amazonaws.com/review?action=evaluate_business_rules&pr_number=${{ github.event.pull_request.number }}"
 
-    - name: Call Lambda for User Story Alignment
+    - name: Call API for Code Reviewer to design patterns Evaluation
       run: |
-        curl -X GET "https://<API_GATEWAY_ID>.execute-api.<AWS_REGION>.amazonaws.com/review?action=evaluate_story&pr_number=${{ github.event.pull_request.number }}"
-
-    - name: Call Lambda to Generate Documentation
-      run: |
-        curl -X GET "https://<API_GATEWAY_ID>.execute-api.<AWS_REGION>.amazonaws.com/review?action=generate_docs&pr_number=${{ github.event.pull_request.number }}"
+        curl -X GET "http://code-reviewer-genai-alb-62547224.us-east-1.elb.amazonaws.com/review?action=evaluate_company_standards&pr_number=${{ github.event.pull_request.number }}"
