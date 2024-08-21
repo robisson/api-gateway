@@ -30,6 +30,22 @@ func NewHandler(config *OpenAPI) *Handler {
 	return &Handler{config: config, proxies: proxies, targets: targets}
 }
 
+// NewHandler cria um novo manipulador com base na configuração fornecida
+func NewHandler2(config *OpenAPI) *Handler {
+	proxies := make(map[string]*httputil.ReverseProxy)
+	targets := make(map[string]*url.URL)
+	for _, methods := range config.Paths {
+		for _, operation := range methods {
+			if _, exists := proxies[operation.BackendURL]; !exists {
+				targetURL, _ := url.Parse(operation.BackendURL)
+				proxies[operation.BackendURL] = httputil.NewSingleHostReverseProxy(targetURL)
+				targets[operation.BackendURL] = targetURL
+			}
+		}
+	}
+	return &Handler{config: config, proxies: proxies, targets: targets}
+}
+
 // ServeHTTP manipula as requisições HTTP roteando-as para o backend apropriado
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
